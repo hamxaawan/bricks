@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brickskuwait</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Reset margin and padding for full-screen layout */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Style for the div with video background */
+        #backgroundDiv {
+            position: relative;
+            width: 100%;
+            height: 100%; /* Adjust to fill the viewport */
+            display: flex;
+            justify-content: start;
+            align-items: top;
+            overflow: hidden;
+        }
+
+        #backgroundDiv video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1; /* Bring video to the foreground */
+            pointer-events: auto; /* Make video clickable */
+        }
+
+        /* Remove default margin from h1 */
+        h1 {
+            margin: 0;
+        }
+
+        /* Button hover effect with fill animation */
+        .custom-button {
+            position: relative;
+            /* margin-left: 60px; */
+            margin-top: 50px;
+            width: 170px;
+            height: 40px;
+            background-color: white;
+            color: black;
+            font-size: 12px;
+            border-radius: 50px;
+            border: 1px solid black;
+            cursor: pointer;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .custom-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: black;
+            z-index: -1;
+            transition: height 0.3s ease;
+        }
+
+        .custom-button:hover::before {
+            height: 100%; /* Fill the button from bottom to top */
+        }
+
+        .custom-button:hover {
+            color: white; /* Change text color to white */
+        }
+
+        .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 60px;
+        margin-left: 60px;
+        margin-right: 60px;
+        }
+        
+        .explore {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        /* gap: 60px; */
+        /* margin-top: 110px; */
+        margin-left: 60px;
+        /* margin-right: 60px; */
+        } 
+
+        .featured {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 60px;
+        margin-left: 60px;
+        margin-right: 60px;
+        }
+
+        .carousel-container {
+        display: flex;
+        overflow-x: flex; /* Enable horizontal scrolling */
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        overflow: scroll; /* Hide the scrollbar */
+        gap: 30px;
+        padding: 20px;
+        margin-left: 60px;
+        margin-right: 60px;
+        cursor: grab; /* Change cursor to indicate draggable */
+        user-select: none; /* Prevent text selection */
+        }
+
+        .carousel-container:active {
+            cursor: grabbing; /* Change cursor when dragging */
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .carousel-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .carousel-item {
+            flex: 0 0 auto;
+            width: 300px; /* Adjust width as needed */
+            background-color: #ffffff;
+            /* border-radius: 10px; */
+            /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+            padding: 20px;
+            scroll-snap-align: start;
+            text-align: start;
+            user-select: none; /* Prevent text selection */
+        }
+
+        .carousel-item h3, .carousel-item p {
+            user-select: none; /* Prevent text selection */
+        }
+
+        .carousel-item h3 {
+            font-size: 24px;
+            margin-bottom: 40px;
+        }
+
+        .carousel-item p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .my-div {
+            width: 100%;
+            height: 650px;
+            background-color: white; /* initial color */
+            transition: background-color 0.7s ease; /* smooth transition */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            font-size: 60px;
+        }
+
+        .my-div video {
+            width: 100%; /* Make video take full width */
+            height: auto; /* Maintain aspect ratio */
+            object-fit: cover; /* Ensure the video covers the container */
+        }
+
+        /* When mouse is over */
+        .my-div:hover {
+            background-color: black;
+            color: rgb(249, 205, 205); /* change text color too */
+        }
+
+         /* Styling the div */
+        .custom-area {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hide cursor ONLY inside the custom-area */
+        .custom-area:hover {
+            cursor: none;
+        }
+
+        /* Custom cursor */
+        .cursor {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            align-content: center;
+            text-align:center;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            display: none; /* Hidden by default */
+            transition: background-color 0.2s;
+            z-index: 3;
+        }
+
+        
+        /* Text outside the custom cursor */
+        .cursor-text {
+            position: absolute;
+            top: 120%; /* Position below the cursor */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: WHITE;
+            white-space: nowrap;
+        }
+
+         /* Button hover effect with fill animation */
+         .aboutus-btn {
+            position: relative;
+            /* margin-left: 60px; */
+            /* margin-top: 50px; */
+            width: 170px;
+            height: 40px;
+            background-color: rgb(0, 0, 0);
+            color: rgb(249, 205, 205);
+            font-size: 12px;
+            border-radius: 50px;
+            border: 1px solid rgb(249, 205, 205);
+            cursor: pointer;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .aboutus-btn::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: rgb(249, 205, 205);
+            z-index: -1;
+            transition: height 0.3s ease;
+        }
+
+        .aboutus-btn:hover::before {
+            height: 100%; /* Fill the button from bottom to top */
+        }
+
+        .aboutus-btn:hover {
+            color: rgb(0, 0, 0); /* Change text color to black */
+        }
+
+        .footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 50px 80px;
+            background-color: #3f3f3f;
+        }
+
+        .footer-column {
+            flex: 1 1 200px;
+            margin: 20px;
+            min-width: 200px;
+        }
+
+        .footer-column h3 {
+            font-size: 30px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .footer-column ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .menu-bar {
+            width: 100%;
+            background-color: rgb(37, 37, 37);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            padding: 20px 0;
+            gap: 10px;
+        }
+
+        .menu-name {
+            color: white;
+            font-size: clamp(14px, 2vw, 30px);
+            display: flex;
+            align-items: center;
+            height: 60px;
+            padding: 0 10px;
+            white-space: nowrap;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0); /* Transparent black */
+            padding: 30px 30px;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2;
+            transition: top 0.5s; /* Smooth transition for hiding/showing */
+            }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            height: 45px;
+            /* background-color: #333; */
+            color: white;
+            padding: 0 10px;
+            position: relative;
+            margin-right: 80px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .menu {
+            display: flex;
+            gap: 100px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: white;
+            font-size: 20px;
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .menu {
+                display: none; /* Hide menu on small screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                display: none; /* Hide center menu on small screens */
+            }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr); /* Adjust grid to 2 columns */
+            }
+
+            .my-div {
+                grid-template-columns: 1fr; /* Stack text and video vertically */
+                height: auto;
+            }
+
+            .my-div video {
+                height: auto; /* Adjust height for medium screens */
+            }
+
+            .footer {
+                grid-template-columns: 1fr; /* Stack left and right footer vertically */
+                height: auto;
+            }
+
+            .right-footer {
+                grid-template-columns: 1fr; /* Stack columns vertically */
+                gap: 10px;
+            }
+
+            .right-footer div {
+                align-items: center; /* Center align content */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr; /* Single column layout */
+            }
+
+            .carousel-container {
+                flex-direction: column; /* Stack carousel items vertically */
+                gap: 20px;
+            }
+
+            .footer {
+                padding: 20px; /* Add padding for smaller screens */
+            }
+
+            .left-footer, .right-footer {
+                align-items: center; /* Center align content */
+                text-align: center;
+            }
+
+            .right-footer div {
+                margin-bottom: 20px; /* Add spacing between sections */
+            }
+
+            .my-div {
+                padding: 10px; /* Add padding for smaller screens */
+            }
+
+            .my-div video {
+                height: auto; /* Ensure video scales properly */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1, h3, p, text {
+                font-size: smaller; /* Reduce font sizes */
+            }
+
+            .custom-button {
+                width: 140px; /* Adjust button size */
+                height: 35px;
+                font-size: 10px;
+            }
+
+            .my-div {
+                padding: 10px; /* Add padding for smaller screens */
+            }
+
+            .footer {
+                gap: 20px; /* Add spacing between footer sections */
+            }
+
+            .carousel-container {
+                gap: 10px; /* Reduce gap for smaller screens */
+            }
+
+            .my-div video {
+                height: auto; /* Ensure video scales properly for very small screens */
+            }
+        }
+
+        .responsive-text {
+            font-size: 60px;
+            margin-left: 80px;
+        }
+
+        @media (max-width: 1200px) {
+            .responsive-text {
+                font-size: 50px; /* Adjust font size for medium screens */
+                margin-left: 80px; /* Reduce left margin */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .responsive-text {
+                font-size: 40px; /* Adjust font size for smaller screens */
+                margin-left: 80px; /* Further reduce left margin */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .responsive-text {
+                font-size: 30px; /* Adjust font size for very small screens */
+                margin-left: 80px; /* Minimal left margin */
+            }
+        }
+
+        @media screen and (max-width: 1200px) {
+            .menu-name {
+                font-size: 24px;
+                /* flex: 1 1 20%; */
+            }
+        }
+
+        /* Small screens (mobile landscape, up to 768px) */
+        @media screen and (max-width: 768px) {
+            .menu-name {
+                font-size: 20px;
+                /* flex: 1 1 40%; */
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
+        /* Extra small screens (mobile portrait, up to 480px) */
+        @media screen and (max-width: 480px) {
+            .menu-name {
+                font-size: 16px;
+                /* flex: 1 1 100%; */
+                text-align: center;
+            }
+        }
+
+          /* Responsive for tablets */
+    @media (max-width: 768px) {
+      .footer {
+        justify-content: space-around;
+      }
+      .footer-column {
+        flex: 1 1 45%;
+      }
+    }
+
+    /* Responsive for phones */
+    @media (max-width: 480px) {
+      .footer-column {
+        flex: 1 1 100%;
+        text-align: center;
+      }
+    }
+    </style>
+    <!-- Add Font Awesome library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="custom-area" id="customArea">
+        <div id="backgroundDiv">
+            <div class="cursor" id="customCursor">
+                <h5 > WATCH<br>REEL</h5>
+                <div class="cursor-text" id="cursorText">BRICKS KUWAIT</div> <!-- Text outside the cursor -->
+            </div> 
+            <video loop autoplay muted>
+                <source src="C:\Users\Admin\Downloads\Video/Brickskuwait.mp4" type="video/mp4">
+            </video>
+            <header>
+                <div class="logo"><a href="#" style="text-decoration: none; padding-left: 30px ; font-size: 2rem ; color: white;" >BRICKS</a></div>
+                
+                <nav class="menu">
+                  <a href="#">About</a>
+                  <a href="#">Work</a>
+                  <a href="#">Contact</a>
+                  <a href="#">Careers</a>
+                  <a href="#">Client Login</a>
+                </nav>
+            
+                <div class="top-bar">
+                    <i class="fas fa-ellipsis-v menu-icon"></i> <!-- Vertical 3-dot icon -->
+                  </div>
+              </header>
+            
+        </div>
+    </div>
+    <div class="menu-bar">
+        <div class="menu-name">Hamza</div>
+        <div class="menu-name">Papajhons</div>
+        <div class="menu-name">Dawi</div>
+        <div class="menu-name">RIC</div>
+      </div>
+    <div>
+        <hr style="width: calc(100% - 120px); margin: 148px 60px 0 60px;">
+    </div>
+    <div class="explore" style="margin-top: 110px;">
+        <text class="responsive-text" style=" color: black;  margin-left: 0px;">
+            BRICKS KUWAIT®
+        </text>
+        <text class="responsive-text" style=" color: black; font-size: 25px; margin-left: 0px; ">
+            is a global branding and digital design<br> 
+            agency building products, services, and <br>
+            eCommerce experiences that turn cultural <br>
+            values into company value.
+        </text>
+    </div>
+    <div style="display: flex; justify-content: start; margin-left: 60px; margin-bottom: 100px;">
+        <button class="custom-button">
+            <text style="font-size: 15px; font-weight: bold; align-items: center;">
+                SEE THE WORK
+            </text>
+        </button>
+    </div>
+    <div class="container">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; margin-right: 60px ; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+    </div>
+    <div>
+        <hr style="width: calc(100% - 120px); margin: 148px 60px 0 60px;">
+    </div>
+    <div class="explore">
+        <text style="margin-top: 100px; font-size: 30px; margin-left: 10%;">
+            Explore our work
+        </text>
+    </div>
+    <div class="explore">    
+        <text style=" font-size: 3rem; margin-left: 10%;">
+            Explore our magic & Experience it
+        </text>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 0px; margin-bottom: 60px;">
+        <button class="custom-button" style="margin-top: 118px;">
+            <text style="font-size: 13px; font-weight: bold; align-items: center;">
+                VIEW ALL PROJECTS
+            </text>
+        </button>
+    </div>  
+    <div CLASS="container"> 
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+        <img src="C:\Users\Admin\Desktop\web designs/cook.jpg" style="width: 100%; height: 570px; border-radius: 10px; box-shadow: 10px 10px 10px rgb(104, 104, 104);">
+    </div>  
+    <div>
+        <hr style="width: calc(100% - 120px); margin: 148px 60px 0 60px;">
+    </div>
+    <div style="margin-top: 148px;">
+        <text class="responsive-text">
+            FEATURED
+        </text>
+    </div>
+    <div>
+        <text class="responsive-text">
+            ENGAGEMENT
+        </text>
+    </div>
+    <div class="carousel-container" id="carouselContainer">
+        <div class="carousel-item">
+            <h3>PINOLO</h3>
+            <p>Pinolo is a delightful 
+                Italian dessert made 
+                with pine nuts, offering 
+                a unique blend of rich, 
+                nutty flavor and soft, 
+                chewy texture. Often 
+                found in the form of 
+                cookies called pignoli, 
+                these treats are especially
+                popular in Southern Italy
+                and among Italian-
+                American communities. </p>
+        </div>
+        <div class="carousel-item">
+            <h3>MeltBar</h3>
+            <p>MeltBar is a trendy eatery 
+                known for its indulgent 
+                comfort food, especially 
+                its creative takes on classic 
+                grilled cheese sandwiches. 
+                With a menu that fuses 
+                nostalgia and innovation, 
+                MeltBar offers everything 
+                from the traditional cheddar 
+                melt to bold combinations
+                 featuring mac and cheese, 
+                pulled pork, or spicy jalapeños.</p>
+        </div>
+        <div class="carousel-item">
+            <h3>PINOLO</h3>
+            <p>Pinolo is a delightful 
+                Italian dessert made 
+                with pine nuts, offering 
+                a unique blend of rich, 
+                nutty flavor and soft, 
+                chewy texture. Often 
+                found in the form of 
+                cookies called pignoli, 
+                these treats are especially
+                popular in Southern Italy
+                and among Italian-
+                American communities.</p>
+        </div>
+        <div class="carousel-item">
+            <h3>MELTBAR</h3>
+            <p>MeltBar is a trendy eatery 
+                known for its indulgent 
+                comfort food, especially 
+                its creative takes on classic 
+                grilled cheese sandwiches. 
+                With a menu that fuses 
+                nostalgia and innovation, 
+                MeltBar offers everything 
+                from the traditional cheddar 
+                melt to bold combinations
+                 featuring mac and cheese, 
+                pulled pork, or spicy jalapeños</p>
+        </div>
+        <div class="carousel-item">
+            <h3>PINOLO</h3>
+            <p>Pinolo is a delightful 
+                Italian dessert made 
+                with pine nuts, offering 
+                a unique blend of rich, 
+                nutty flavor and soft, 
+                chewy texture. Often 
+                found in the form of 
+                cookies called pignoli, 
+                these treats are especially
+                popular in Southern Italy
+                and among Italian-
+                American communities.</p>
+        </div>
+    </div>
+    <div class="my-div">
+        <div style="margin-left: 60px; margin-top: 40px; display: flex; flex-direction: column; gap: 20px;">
+            <p>
+                BRICKS KUWAIT<br>
+                Bricks stands 
+                as <br>a testament 
+                to the<br> power of 
+                ambition
+            </p>
+            <button class="aboutus-btn">
+                <text style="font-size: 15px; font-weight: bold; align-items: center;">
+                    ABOUT US
+                </text>
+            </button>
+        </div>
+        <div style="margin-top: 100px; margin-right: 50px;">
+            <video loop autoplay muted>
+                <source src="C:\Users\Admin\Downloads\Video/Brickskuwait.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>   
+    <!-- footer  -->
+    <footer class="footer">
+        <div class="footer-column">
+          <h3>BRICKS</h3>
+          <ul style="padding-top:40px;">
+            <li><a href="#">Ready to get started</a></li>
+          </ul>
+          <button class="custom-button" style="margin-top: 20px;">
+            <text style="font-size: 15px; font-weight: bold; align-items: center;">
+                GET STARTED
+            </text>
+        </div>
+    
+        <div class="footer-column">
+          <h3>Services</h3>
+          <ul style="padding-top: 20px;">
+            <li><a href="#">Digital Marketing</a></li>
+            <li><a href="#">Shopify Dev</a></li>
+            <li><a href="#">Branding</a></li>
+            <li><a href="#">Service</a></li>
+          </ul>
+        </div>
+    
+        <div class="footer-column">
+          <h3>About</h3>
+          <ul style="padding-top: 20px;">
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Work</a></li>
+            <li><a href="#">Team</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blogs</a></li>
+          </ul>
+        </div>
+    
+        <div class="footer-column">
+          <h3>Help</h3>
+          <ul style="padding-top: 20px;">
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Client Login</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+            <ul style="padding-top: 20px; display: flex; gap: 30px;">
+              <li><a href="#" style="font-size: 10px;">Privacy Policy</a></li>
+              <li><a href="#" style="font-size: 10px;">Terms & conditions</a></li>
+            </ul>
+          </div>
+        <div class="footer-column">
+            <ul style="padding-top: 20px; display: flex; gap: 10px;">
+                <li><a href="https://www.facebook.com" target="_blank"><i class="fa fa-facebook" style="font-size: 24px; color: white;"></i></a></li>
+                <li><a href="https://www.twitter.com" target="_blank"><i class="fa fa-twitter" style="font-size: 24px; color: white;"></i></a></li>
+                <li><a href="https://www.instagram.com" target="_blank"><i class="fa fa-instagram" style="font-size: 24px; color: white;"></i></a></li>
+                <li><a href="https://www.linkedin.com" target="_blank"><i class="fa fa-linkedin" style="font-size: 24px; color: white;"></i></a></li>
+            </ul>
+        </div>
+      </footer>
+    <script>
+        // JavaScript for drag-to-scroll functionality
+        const carousel = document.getElementById('carouselContainer');
+        let isDragging = false;
+        let startX, scrollLeft;
+
+        carousel.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            carousel.classList.add('active');
+            startX = e.pageX - carousel.offsetLeft;
+            scrollLeft = carousel.scrollLeft;
+        });
+
+        carousel.addEventListener('mouseleave', () => {
+            isDragging = false;
+            carousel.classList.remove('active');
+        });
+
+        carousel.addEventListener('mouseup', () => {
+            isDragging = false;
+            carousel.classList.remove('active');
+        });
+
+        carousel.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - carousel.offsetLeft;
+            const walk = (x - startX) * 2; // Adjust scroll speed
+            carousel.scrollLeft = scrollLeft - walk;
+        });
+
+        const customArea = document.getElementById('customArea');
+        const customCursor = document.getElementById('customCursor');
+
+        // Show cursor when entering the div
+        customArea.addEventListener('mouseenter', () => {
+            customCursor.style.display = 'block';
+        });
+
+        // Hide cursor when leaving the div
+        customArea.addEventListener('mouseleave', () => {
+            customCursor.style.display = 'none';
+        });
+
+        // Move the custom cursor and text inside the div
+        customArea.addEventListener('mousemove', (e) => {
+            const rect = customArea.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Ensure the custom cursor starts working only after 100px from the top
+            if (y > 100) {
+                customCursor.style.left = x + 'px';
+                customCursor.style.top = y + 'px';
+                customCursor.style.display = 'block';
+                customArea.style.cursor = 'none'; // Hide default cursor
+            } else {
+                customCursor.style.display = 'none';
+                customArea.style.cursor = 'default'; // Show default cursor
+            }
+        });
+
+        // Position the custom cursor at the center on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const rect = customArea.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            customCursor.style.left = centerX + 'px';
+            customCursor.style.top = centerY + 'px';
+            customCursor.style.display = 'block'; // Ensure the cursor is visible
+        });
+
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        const headerLinks = document.querySelectorAll('header a'); // Select all links in the header
+        const topBar = document.querySelector('.top-bar'); // Select the top-bar
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Hide header on scroll down, show on scroll up
+            if (scrollTop > lastScrollTop) {
+                header.style.top = '-100px'; // Hide header
+            } else {
+                header.style.top = '0'; // Show header
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Prevent negative scroll
+
+            // Change header, top-bar, and text color based on background
+            const backgroundDiv = document.getElementById('backgroundDiv');
+            const rect = backgroundDiv.getBoundingClientRect();
+            if (rect.bottom <= 0) {
+                header.style.backgroundColor = 'white';
+                header.style.color = 'black';
+                topBar.style.color = 'black'; // Change top-bar text color
+                headerLinks.forEach(link => link.style.color = 'black'); // Change link text color
+            } else {
+                header.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                header.style.color = 'white';
+                topBar.style.color = 'white'; // Change top-bar text color
+                headerLinks.forEach(link => link.style.color = 'white'); // Change link text color
+            }
+        });
+    </script>
+</body>
+</html>
